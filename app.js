@@ -44,7 +44,7 @@ app.use(express.json());
 // Rutas
 //Página de inicio
 app.get('/', (req, res) => {
-  res.send('Bienvenido al servidor "Beyond Life"')
+  res.send('Bienvenido al servidor "EL POLLO RICO"')
 })
 
 
