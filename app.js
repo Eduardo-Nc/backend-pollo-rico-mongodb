@@ -55,6 +55,11 @@ app.use('/api/comida', require('./src/routes/comida.routes'));
 app.use('/api/presentacion', require('./src/routes/presentacion.routes'));
 app.use('/api/sucursal', require('./src/routes/sucursal.routes'));
 
+app.use('/api/venta', require('./src/routes/venta.routes'));
+app.use('/api/corte', require('./src/routes/corte.routes'));
+app.use('/api/detalle', require('./src/routes/detalle.routes'));
+app.use('/api/complemento', require('./src/routes/complemento.routes'));
+
 app.use('/api/user', require('./src/routes/user.routes'));
 app.use('/api/rol', require('./src/routes/role.routes'));
 
