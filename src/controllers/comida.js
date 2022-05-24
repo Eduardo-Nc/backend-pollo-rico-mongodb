@@ -79,6 +79,62 @@ const getComidaCantidadRoot = async (req, res = response) => {
 }
 
 
+const comidaCantidadSuc = async (req, res = response) => {
+
+    const { id_suc } = req.params;
+
+
+    try {
+
+        const Found = await Comida.find({
+            status: true, sucursal: id_suc
+        }).populate('sucursal');
+
+        if (Found === 0) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No fueron encontrados comida registrados'
+            })
+        } else {
+            return res.status(200).json(Found)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+const comidaCantidadRoot = async (req, res = response) => {
+
+
+    try {
+        const Found = await Comida.find({
+            status: true
+        }).populate('sucursal');
+
+
+        if (Found === 0) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No fueron encontrados comida registrados'
+            })
+        } else {
+            return res.status(200).json(Found)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
 const getComida = async (req, res = response) => {
     try {
 
@@ -109,15 +165,16 @@ const updatedComida = async (req, res = response) => {
 
 
     const { id } = req.params;
-    const { data } = req.body;
+    // const { data } = req.body;
 
+    console.log(req.body)
 
 
     try {
 
         const updateComida = await Comida.findByIdAndUpdate(
             id,
-            data,
+            req.body,
             {
                 new: true,
             }
@@ -193,6 +250,47 @@ const deactivateComida = async (req, res = response) => {
 }
 
 
+const deleteComida = async (req, res = response) => {
+
+    const { id } = req.params;
+
+    try {
+
+        const updated = await Comida.findByIdAndUpdate(
+            id,
+            { status: false },
+            {
+                new: true,
+            }
+        );
+
+
+        if (!updated) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Comida no encontrado'
+            })
+        }
+        else {
+
+            return res.status(200).json({
+                ok: true,
+                msg: 'Comida fue eliminado correctamente'
+            });
+        }
+
+
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+
+
+}
 
 
 
@@ -201,6 +299,9 @@ module.exports = {
     getComida,
     getComidaCantidadSuc,
     getComidaCantidadRoot,
+    comidaCantidadSuc,
+    comidaCantidadRoot,
     updatedComida,
-    deactivateComida
+    deactivateComida,
+    deleteComida
 }

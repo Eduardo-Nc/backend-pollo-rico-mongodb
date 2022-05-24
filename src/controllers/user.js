@@ -292,6 +292,57 @@ const updateUser = async (req, res = response) => {
 }
 
 
+const updatePasswordUser = async (req, res = response) => {
+
+    const { user_id } = req.params;
+
+    const { contrasena } = req.body;
+
+    console.log(contrasena)
+
+    try {
+
+        // Encriptar contraseña
+        const salt = bcrypt.genSaltSync();
+        let newContrasena = bcrypt.hashSync(contrasena, salt);
+
+        const updatedUser = await User.findByIdAndUpdate(
+            user_id,
+            { contrasena: newContrasena },
+            {
+                new: true,
+            }
+        );
+
+
+        if (!updatedUser) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Usuario no encontrado'
+            })
+        }
+        else {
+
+            return res.status(200).json({
+                ok: true,
+                msg: 'Usuario fue actualizado correctamente'
+            });
+        }
+
+
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+
+
+}
+
+
 const enviarCredenciales = async (req, res = response) => {
 
     const { nombre, email, password } = req.body;
@@ -610,6 +661,7 @@ module.exports = {
     createUser,
     updateTokenAppUser,
     loginUser,
+    updatePasswordUser,
     revalidateToken,
     updateUser,
     deleteUser,

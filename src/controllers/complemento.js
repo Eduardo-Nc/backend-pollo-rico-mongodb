@@ -77,7 +77,61 @@ const getComplementoCantidadRoot = async (req, res = response) => {
     }
 }
 
+const complementoCantidadSuc = async (req, res = response) => {
 
+    const { id_suc } = req.params;
+
+
+    try {
+
+        const Found = await Complemento.find({
+            status: true, sucursal: id_suc
+        }).populate('sucursal').populate('clasificacion').populate('presentacion');
+
+        if (Found === 0) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No fueron encontrados complemento registrados'
+            })
+        } else {
+            return res.status(200).json(Found)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+const complementoCantidadRoot = async (req, res = response) => {
+
+
+    try {
+        const Found = await Complemento.find({
+            status: true
+        }).populate('sucursal').populate('clasificacion').populate('presentacion');
+
+
+        if (Found === 0) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No fueron encontrados complemento registrados'
+            })
+        } else {
+            return res.status(200).json(Found)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
 
 const getComplemento = async (req, res = response) => {
     try {
@@ -109,7 +163,7 @@ const updatedComplemento = async (req, res = response) => {
 
 
     const { id } = req.params;
-    const { data } = req.body;
+    // const { data } = req.body;
 
 
 
@@ -117,7 +171,7 @@ const updatedComplemento = async (req, res = response) => {
 
         const updateComplemento = await Complemento.findByIdAndUpdate(
             id,
-            data,
+            req.body,
             {
                 new: true,
             }
@@ -158,7 +212,7 @@ const deactivateComplemento = async (req, res = response) => {
 
         const updateComplemento = await Complemento.findByIdAndUpdate(
             id,
-            req.body,
+            { status: false },
             {
                 new: true,
             }
@@ -201,6 +255,8 @@ module.exports = {
     getComplemento,
     getComplementoCantidadSuc,
     getComplementoCantidadRoot,
+    complementoCantidadSuc,
+    complementoCantidadRoot,
     updatedComplemento,
     deactivateComplemento
 }

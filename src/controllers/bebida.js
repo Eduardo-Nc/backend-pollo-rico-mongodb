@@ -78,6 +78,63 @@ const getBebidaCantidadRoot = async (req, res = response) => {
 }
 
 
+const bebidaCantidadSuc = async (req, res = response) => {
+
+    const { id_suc } = req.params;
+
+
+    try {
+
+        const Found = await Bebida.find({
+            status: true, sucursal: id_suc
+        }).populate('sucursal').populate('clasificacion').populate('presentacion');
+
+        if (Found === 0) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No fueron encontrados bebida registrados'
+            })
+        } else {
+            return res.status(200).json(Found)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+const bebidaCantidadRoot = async (req, res = response) => {
+
+
+    try {
+        const Found = await Bebida.find({
+            status: true
+        }).populate('sucursal').populate('clasificacion').populate('presentacion');
+
+
+        if (Found === 0) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No fueron encontrados bebida registrados'
+            })
+        } else {
+            return res.status(200).json(Found)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
 
 const getBebida = async (req, res = response) => {
     try {
@@ -109,15 +166,15 @@ const updatedBebida = async (req, res = response) => {
 
 
     const { id } = req.params;
-    const { data } = req.body;
+    // const { data } = req.body;
 
-
+    // console.log(req.body)
 
     try {
 
         const updateBebida = await Bebida.findByIdAndUpdate(
             id,
-            data,
+            req.body,
             {
                 new: true,
             }
@@ -158,7 +215,7 @@ const deactivateBebida = async (req, res = response) => {
 
         const updateBebida = await Bebida.findByIdAndUpdate(
             id,
-            req.body,
+            { status: false },
             {
                 new: true,
             }
@@ -201,6 +258,8 @@ module.exports = {
     getBebida,
     getBebidaCantidadSuc,
     getBebidaCantidadRoot,
+    bebidaCantidadSuc,
+    bebidaCantidadRoot,
     updatedBebida,
     deactivateBebida
 }

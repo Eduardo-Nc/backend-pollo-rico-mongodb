@@ -2,7 +2,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
-const { getUser, getAllUsers, getUsersCantidadSuc, getUsersCantidadRoot, updateUser, usersCantidadSuc, usersCantidadRoot, createUser, loginUser, revalidateToken, updateTokenAppUser, deleteUser, enviarCredenciales } = require('../controllers/user');
+const { getUser, getAllUsers, getUsersCantidadSuc, getUsersCantidadRoot, updatePasswordUser, updateUser, usersCantidadSuc, usersCantidadRoot, createUser, loginUser, revalidateToken, updateTokenAppUser, deleteUser, enviarCredenciales } = require('../controllers/user');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { verifyFile } = require('../middlewares/verifyFile');
 
@@ -33,6 +33,8 @@ router.put('/token/update/:user_id', updateTokenAppUser);
 router.put('/delete/:user_id', deleteUser);
 
 router.put('/update/:user_id', updateUser);
+
+router.put('/update/password/:user_id', updatePasswordUser);
 
 router.post('/enviarcredenciales', enviarCredenciales);
 
