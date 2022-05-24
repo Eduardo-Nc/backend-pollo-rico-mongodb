@@ -21,6 +21,63 @@ const createBebida = async (req, res = response) => {
     }
 }
 
+const getBebidaCantidadSuc = async (req, res = response) => {
+
+    const { id_suc } = req.params;
+
+    try {
+
+        const Found = await Bebida.find({
+            status: true, sucursal: id_suc
+        });
+
+        if (Found === 0) {
+            return res.status(201).json({
+                ok: false,
+                msg: 'No fueron encontrados bebida registrados',
+                CantBebidas: 0
+            })
+        } else {
+            return res.status(200).json({ CantBebidas: Found.length })
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+const getBebidaCantidadRoot = async (req, res = response) => {
+
+
+    try {
+        const Found = await Bebida.find({
+            status: true
+        });
+
+        if (Found === 0) {
+            return res.status(201).json({
+                ok: false,
+                msg: 'No fueron encontrados bebida registrados',
+                CantBebidas: 0
+            })
+        } else {
+            return res.status(200).json({ CantBebidas: Found.length })
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
 
 const getBebida = async (req, res = response) => {
     try {
@@ -142,6 +199,8 @@ const deactivateBebida = async (req, res = response) => {
 module.exports = {
     createBebida,
     getBebida,
+    getBebidaCantidadSuc,
+    getBebidaCantidadRoot,
     updatedBebida,
     deactivateBebida
 }

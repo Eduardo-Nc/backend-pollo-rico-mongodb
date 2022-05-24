@@ -21,6 +21,63 @@ const createComplemento = async (req, res = response) => {
     }
 }
 
+const getComplementoCantidadSuc = async (req, res = response) => {
+
+    const { id_suc } = req.params;
+
+    try {
+
+        const Found = await Complemento.find({
+            status: true, sucursal: id_suc
+        });
+
+        if (Found === 0) {
+            return res.status(201).json({
+                ok: false,
+                msg: 'No fueron encontrados complementos registrados',
+                CantComplementos: 0
+            })
+        } else {
+            return res.status(200).json({ CantComplementos: Found.length })
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+const getComplementoCantidadRoot = async (req, res = response) => {
+
+
+    try {
+        const Found = await Complemento.find({
+            status: true
+        });
+
+        if (Found === 0) {
+            return res.status(201).json({
+                ok: false,
+                msg: 'No fueron encontrados complementos registrados',
+                CantComplementos: 0
+            })
+        } else {
+            return res.status(200).json({ CantComplementos: Found.length })
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
 
 const getComplemento = async (req, res = response) => {
     try {
@@ -142,6 +199,8 @@ const deactivateComplemento = async (req, res = response) => {
 module.exports = {
     createComplemento,
     getComplemento,
+    getComplementoCantidadSuc,
+    getComplementoCantidadRoot,
     updatedComplemento,
     deactivateComplemento
 }

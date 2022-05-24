@@ -21,6 +21,70 @@ const createCorte = async (req, res = response) => {
     }
 }
 
+const getCorteTotal = async (req, res = response) => {
+
+    const { i, f } = req.params;
+
+
+    try {
+
+        const corteFound = await Corte.findOne({
+            status: true, estado: "Cerrado",
+            fecha_venta_cierre_caja: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+        });
+
+
+        if (corteFound === null) {
+            return res.status(201).json({
+                ok: false,
+                msg: 'No fueron encontrados corte registrados',
+                total_venta: 0
+            })
+        } else {
+            return res.status(200).json({ total_venta: Object.keys(corteFound).length })
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+const getCorteTotalSuc = async (req, res = response) => {
+
+    const { i, f, id_suc } = req.params;
+
+    try {
+
+        const corteFound = await Corte.findOne({
+            status: true, sucursal: id_suc, estado: "Cerrado",
+            fecha_venta_cierre_caja: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+        });
+
+
+        if (corteFound === null) {
+            return res.status(201).json({
+                ok: false,
+                msg: 'No fueron encontrados corte registrados',
+                total_venta: 0
+            })
+        } else {
+            return res.status(200).json({ total_venta: Object.keys(corteFound).length })
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
 
 const getCorte = async (req, res = response) => {
     try {
@@ -142,6 +206,8 @@ const deactivateCorte = async (req, res = response) => {
 module.exports = {
     createCorte,
     getCorte,
+    getCorteTotal,
+    getCorteTotalSuc,
     updatedCorte,
     deactivateCorte
 }
