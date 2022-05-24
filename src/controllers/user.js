@@ -164,8 +164,10 @@ const updateTokenAppUser = async (req, res = response) => {
 const loginUser = async (req, res = response) => {
 
     try {
-        const { email, password } = req.body;
-        const usuario = await User.findOne({ "profile.email": email }).populate('profile.rol');
+        const { correo, contrasena } = req.body;
+        const usuario = await User.findOne({ correo: correo }).populate('rol').populate('sucursal').populate('cargo');
+
+        // console.log(usuario);
 
         if (!usuario) {
             return res.status(400).json({
@@ -179,32 +181,36 @@ const loginUser = async (req, res = response) => {
             });
         }
 
-        const { name, surnames, cell_number } = usuario.profile;
-        const { profile_photo } = usuario.profile.specific_dates;
-
-
         // Confirmar los passwords
-        const validPassword = bcrypt.compareSync(password, usuario.profile.password);
+        const validPassword = bcrypt.compareSync(contrasena, usuario.contrasena);
 
-        if (!validPassword) {
+        // console.log("validPassword: " + validPassword)
+
+        if (validPassword === false) {
             return res.status(400).json({
                 ok: false,
                 msg: 'Contraseña incorrecta'
             });
         }
 
+        // console.log("validPassword finalizar: " + validPassword)
+
         // Generar JWT
-        const token = await generarJWT(usuario._id, usuario.profile.name);
+        const token = await generarJWT(usuario._id, usuario.nombre_completo_usuario);
+
+        // console.log(token)
 
         res.status(200).json({
             ok: true,
-            uid: usuario._id,
-            name: name,
-            surnames: surnames,
-            email: usuario.profile.email,
-            rol: usuario.profile.rol.name,
-            idRol: usuario.profile.rol._id,
-            photo: profile_photo,
+            id_usuario: usuario._id,
+            nombre_completo_usuario: usuario.nombre_completo_usuario,
+            id_sucursal: usuario.sucursal._id,
+            nombre_sucursal: usuario.sucursal.name,
+            edad_usuario: usuario.edad_usuario === null ? 0 : usuario.edad_usuario,
+            telefono_usuario: usuario.telefono_usuario,
+            correo: usuario.correo,
+            nombre_cargo: usuario.cargo.name,
+            id_permiso_usuario: usuario.rol._id,
             token
         })
 

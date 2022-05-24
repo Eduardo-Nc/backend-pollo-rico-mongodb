@@ -15,14 +15,7 @@ router.get('/', getAllUsers);
 
 router.post('/new', createUser);
 
-router.post('/login',
-    [
-        check('email', 'El correo es obligatorio').isEmail(),
-        check('password', 'La contraseña debe de ser de 6 caracteres').isLength({ min: 6 }),
-        validarCampos
-    ],
-    loginUser
-);
+router.post('/login', loginUser);
 
 
 router.post('/renew', validarJWT, revalidateToken);

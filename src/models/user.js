@@ -25,7 +25,7 @@ const userSchema = Schema({
     },
     edad_usuario: {
         type: Date,
-        require: true
+        require: false
     },
     sucursal:
     {

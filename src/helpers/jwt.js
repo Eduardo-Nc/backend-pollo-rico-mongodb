@@ -18,8 +18,6 @@ const generarJWT = (uid, name) => {
             resolve(token);
 
         })
-
-
     })
 }
 
