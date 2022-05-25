@@ -64,6 +64,7 @@ app.use('/api/user', require('./src/routes/user.routes'));
 app.use('/api/rol', require('./src/routes/role.routes'));
 
 
+app.use('/api/reporte', require('./src/routes/reporte.routes'));
 
 
 app.use(express.static(path.join(__dirname, './public')));

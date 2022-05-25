@@ -6,6 +6,10 @@ const sucursalSchema = new Schema({
     type: String,
     require: true,
   },
+  abreviatura: {
+    type: String,
+    require: true,
+  },
   telefono_usuario: {
     type: String,
     require: true

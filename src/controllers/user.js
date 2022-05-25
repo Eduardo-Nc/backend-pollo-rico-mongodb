@@ -19,6 +19,8 @@ const getUser = async (req, res = response) => {
 
         const usuario = await User.findById(user_id).populate('rol').populate('sucursal').populate('cargo');
 
+        // console.log(!usuario)
+
         if (!usuario) {
             return res.status(404).json({
                 ok: false,
@@ -49,7 +51,7 @@ const getUsersCantidadSuc = async (req, res = response) => {
             status: true, sucursal: id_suc
         });
 
-        console.log(Found)
+        // console.log(Found)
 
         if (Found === 0) {
             return res.status(201).json({
@@ -298,7 +300,7 @@ const updatePasswordUser = async (req, res = response) => {
 
     const { contrasena } = req.body;
 
-    console.log(contrasena)
+    // console.log(contrasena)
 
     try {
 

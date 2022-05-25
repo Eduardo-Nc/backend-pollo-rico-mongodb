@@ -1,13 +1,40 @@
 const { response } = require('express');
 const Venta = require("../models/venta");
 const moment = require('moment-timezone');
+const Sucursal = require("../models/sucursal");
+
+
 
 
 const createVenta = async (req, res = response) => {
 
+    // console.log(req.body)
+    // TEK20220525-001
+    const { id_suc } = req.params;
+
+    let i = moment().tz('America/Merida').format('YYYY-MM-DD');
+    let f = moment().tz('America/Merida').add(1, 'days').format('YYYY-MM-DD');
+
     try {
 
+        const cantVentas = await Venta.find({ status: true, sucursal: id_suc, createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') } });
+        let fechaFolio = moment().tz('America/Merida').format('YYYYMMDD');
+        const sucursalFound = await Sucursal.findById(id_suc);
+        let abreviaturaSuc = sucursalFound.abreviatura;
+
+        // Aqui lo que hago es concatenar ceros 
+        const fill = (number, len) => "0".repeat(len - number.toString().length) + number.toString();
+        // Lo que hago aquí es sacar la cantidad de colecciones existentes y sumarle 1
+        const folio = parseInt(cantVentas.length) + 1;
+
+
+        // Aquí lo que hago es concatenar a mi obejeto que se guardara en mi base de datos el folio
+        // Salida esperada C00001 O S00001 O P0001
+
         const venta = new Venta(req.body);
+
+        venta.folio = `${abreviaturaSuc}${fechaFolio}-${fill(folio, 3)}`;
+
 
         await venta.save();
 
@@ -198,7 +225,32 @@ const deactivateVenta = async (req, res = response) => {
 }
 
 
+const getUltimaVenta = async (req, res = response) => {
 
+    const { id_suc } = req.params;
+
+
+    try {
+        const ventaFound = await Venta.findOne({
+            status: true, sucursal: id_suc
+        }).sort({ $natural: -1 }).populate('sucursal');
+
+        // console.log(ventaFound)
+
+        if (ventaFound === undefined) {
+            return res.status(201).json({})
+        } else {
+            return res.status(200).json(ventaFound)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
 
 
 module.exports = {
@@ -207,5 +259,6 @@ module.exports = {
     getVentaCantidadSuc,
     getVentaCantidadSucRoot,
     updatedVenta,
-    deactivateVenta
+    deactivateVenta,
+    getUltimaVenta
 }

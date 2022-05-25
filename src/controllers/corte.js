@@ -116,15 +116,14 @@ const updatedCorte = async (req, res = response) => {
 
 
     const { id } = req.params;
-    const { data } = req.body;
-
-
+    // const { data } = req.body;
+    // console.log(req.body)
 
     try {
 
         const updateCorte = await Corte.findByIdAndUpdate(
             id,
-            data,
+            req.body,
             {
                 new: true,
             }
@@ -200,8 +199,129 @@ const deactivateCorte = async (req, res = response) => {
 }
 
 
+const getUltimoCorteUser = async (req, res = response) => {
+
+    const { id_user } = req.params;
+
+    try {
+
+        const Found = await Corte.findOne({ status: true, user: id_user }).sort({ createdAt: -1 }).populate('user');
 
 
+        if (Found === null) {
+            return res.status(201).json("")
+        } else {
+            return res.status(200).json(Found._id)
+        }
+
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
+
+const getCorteCorreo = async (req, res = response) => {
+
+    const { correo } = req.params;
+
+    // console.log(correo)
+
+    try {
+
+        const Found = await Corte.find({ status: true }).sort({ createdAt: -1 }).populate('user');
+
+        let r = Found.filter(item => item.user.correo === correo);
+
+        // console.log(r)
+
+        if (r.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(r)
+        }
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
+const corteCorreo = async (req, res = response) => {
+
+    const { correo } = req.params;
+
+
+    try {
+
+        const Found = await Corte.find({
+            status: true, estado: "Activo"
+        }).populate('user');
+
+
+        let r = Found.find(item => item.user.correo === correo)
+
+
+        if (r === undefined) {
+            return res.status(201).json({})
+        } else {
+            return res.status(200).json(r)
+        }
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+const corteCorreoRol = async (req, res = response) => {
+
+    const { correo } = req.params;
+
+
+    try {
+
+        const Found = await Corte.find({
+            status: true, estado: "Activo"
+        }).populate('user');
+
+
+        // console.log(Found[0].user.rol)
+        // && item.user.rol === 628c0a94718beafc1c5ca269
+        let r = Found.find(item => item.user.correo === correo)
+
+        // console.log(r)
+
+        if (r === undefined) {
+            return res.status(201).json({})
+        } else {
+            return res.status(200).json(r)
+        }
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
 
 module.exports = {
     createCorte,
@@ -209,5 +329,9 @@ module.exports = {
     getCorteTotal,
     getCorteTotalSuc,
     updatedCorte,
-    deactivateCorte
+    deactivateCorte,
+    getUltimoCorteUser,
+    getCorteCorreo,
+    corteCorreo,
+    corteCorreoRol
 }

@@ -2,6 +2,10 @@ const { Schema, model } = require('mongoose');
 
 
 const ventaSchema = Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
     sucursal:
     {
         type: Schema.Types.ObjectId,

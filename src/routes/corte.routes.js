@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { createCorte, getCorte, getCorteTotal, getCorteTotalSuc, deactivateCorte, updatedCorte } = require('../controllers/corte');
+const { createCorte, getCorte, getCorteTotal, getCorteTotalSuc, deactivateCorte, updatedCorte, getUltimoCorteUser, getCorteCorreo, corteCorreo, corteCorreoRol } = require('../controllers/corte');
 
 const router = Router();
 
@@ -15,6 +15,15 @@ router.post('/new', createCorte);
 router.put('/delete/:id', deactivateCorte);
 
 router.put('/:id', updatedCorte);
+
+router.get('/ultimo_corte/user/:id_user', getUltimoCorteUser);
+
+router.get('/email/:correo', getCorteCorreo);
+
+router.get('/:correo', corteCorreo);
+
+router.get('/permiso/:correo', corteCorreoRol);
+
 
 
 module.exports = router;

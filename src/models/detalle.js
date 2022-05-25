@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 
 const detalleSchema = Schema({
-    nombre_produto: {
+    nombre_producto: {
         type: String,
         require: true
     },
@@ -12,6 +12,11 @@ const detalleSchema = Schema({
     },
     cantidad: {
         type: Number,
+        require: true
+    },
+    fecha_venta: {
+        type: Date,
+        // defaultValue: new Date(),
         require: true
     },
     creationDate: {
