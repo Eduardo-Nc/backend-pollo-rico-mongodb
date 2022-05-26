@@ -51,6 +51,35 @@ const createVenta = async (req, res = response) => {
     }
 }
 
+const getVentaSuc = async (req, res = response) => {
+
+    const { id_suc } = req.params;
+
+
+    try {
+
+        const ventaFound = await Venta.find({
+            status: true, sucursal: id_suc
+
+        }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
+
+        if (ventaFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(ventaFound)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
+
 const getVentaCantidadSuc = async (req, res = response) => {
 
     const { i, f, id_suc } = req.params;
@@ -58,19 +87,21 @@ const getVentaCantidadSuc = async (req, res = response) => {
 
     try {
 
-        const ventaFound = await Venta.find({
+        const CantVentas = await Venta.find({
             status: true, sucursal: id_suc,
             createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
         });
 
-        if (ventaFound === 0) {
+        // console.log(CantVentas)
+
+        if (CantVentas.length === 0) {
             return res.status(201).json({
                 ok: false,
                 msg: 'No fueron encontrados venta registrados',
-                total_venta: 0
+                cantVentas: 0
             })
         } else {
-            return res.status(200).json({ total_venta: ventaFound.length })
+            return res.status(200).json({ cantVentas: CantVentas.length })
         }
 
     } catch (error) {
@@ -95,14 +126,16 @@ const getVentaCantidadSucRoot = async (req, res = response) => {
             createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
         });
 
-        if (CantVentas === 0) {
+        // console.log(CantVentas)
+
+        if (CantVentas.length === 0) {
             return res.status(201).json({
                 ok: false,
                 msg: 'No fueron encontrados venta registrados',
-                total_venta: 0
+                cantVentas: 0
             })
         } else {
-            return res.status(200).json({ total_venta: CantVentas.length })
+            return res.status(200).json({ cantVentas: CantVentas.length })
         }
 
     } catch (error) {
@@ -117,13 +150,12 @@ const getVentaCantidadSucRoot = async (req, res = response) => {
 const getVenta = async (req, res = response) => {
     try {
 
-        const bebidaFound = await Venta.find();
+        const bebidaFound = await Venta.find().sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
 
-        if (bebidaFound === 0) {
-            return res.status(404).json({
-                ok: false,
-                msg: 'No fueron encontrados bebidas registrados'
-            })
+        // console.log(bebidaFound)
+
+        if (bebidaFound.length === 0) {
+            return res.status(201).json([])
         } else {
             return res.status(200).json(bebidaFound)
         }
@@ -139,6 +171,30 @@ const getVenta = async (req, res = response) => {
     }
 }
 
+
+const getVentaAsc = async (req, res = response) => {
+    try {
+
+        const bebidaFound = await Venta.find().sort({ $natural: 1 }).populate('sucursal').populate('user').populate('corte');
+
+        // console.log(bebidaFound)
+
+        if (bebidaFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(bebidaFound)
+        }
+
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
 
 const updatedVenta = async (req, res = response) => {
 
@@ -376,5 +432,7 @@ module.exports = {
     getUltimaVenta,
     getDataReportVenta,
     getTodosVentasUser,
-    getTodosVentasUserAsc
+    getTodosVentasUserAsc,
+    getVentaAsc,
+    getVentaSuc
 }

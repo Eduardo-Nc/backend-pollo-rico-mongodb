@@ -25,9 +25,9 @@ const createSucursal = async (req, res = response) => {
 const getSucursal = async (req, res = response) => {
     try {
 
-        const sucursalFound = await Sucursal.find();
+        const sucursalFound = await Sucursal.find({ status: true });
 
-        if (sucursalFound === 0) {
+        if (sucursalFound.length === 0) {
             return res.status(404).json({
                 ok: false,
                 msg: 'No fueron encontrados sucursal registrados'
@@ -52,15 +52,13 @@ const updatedSucursal = async (req, res = response) => {
 
 
     const { id } = req.params;
-    const { data } = req.body;
-
-
+    // const { data } = req.body;
 
     try {
 
         const updateSucursal = await Sucursal.findByIdAndUpdate(
             id,
-            data,
+            req.body,
             {
                 new: true,
             }
@@ -101,7 +99,7 @@ const deactivateSucursal = async (req, res = response) => {
 
         const updateSucursal = await Sucursal.findByIdAndUpdate(
             id,
-            req.body,
+            { status: false },
             {
                 new: true,
             }
