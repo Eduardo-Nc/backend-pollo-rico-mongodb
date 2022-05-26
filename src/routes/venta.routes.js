@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { createVenta, getVenta, getVentaSuc, getVentaAsc, getVentaCantidadSuc, getUltimaVenta, getDataReportVenta, getVentaCantidadSucRoot, deactivateVenta, updatedVenta, getTodosVentasUser, getTodosVentasUserAsc } = require('../controllers/venta');
+const { createVenta, getVenta, getVentaSuc, getVentaAsc, ventaSucTotales, getVentaCantidadSuc, getUltimaVenta, getDataReportVenta, getVentaCantidadSucRoot, deactivateVenta, updatedVenta, getTodosVentasUser, getTodosVentasUserAsc } = require('../controllers/venta');
 
 const router = Router();
 
@@ -28,6 +28,11 @@ router.get('/todos/:id_user', getTodosVentasUser);
 router.get('/todos/asc/:id_user', getTodosVentasUserAsc);
 
 router.get('/suc/:id_suc', getVentaSuc);
+
+router.get('/corte/total/:i/:f', ventaSucTotales);
+
+
+
 
 
 module.exports = router;

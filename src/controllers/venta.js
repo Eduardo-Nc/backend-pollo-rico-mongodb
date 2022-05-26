@@ -2,6 +2,7 @@ const { response } = require('express');
 const Venta = require("../models/venta");
 const moment = require('moment-timezone');
 const Sucursal = require("../models/sucursal");
+const Corte = require("../models/corte");
 const Detalle = require("../models/detalle");
 const lodash = require('lodash')
 const mongoose = require("mongoose");
@@ -372,6 +373,8 @@ const getDataReportVenta = async (req, res = response) => {
 
     const { id_suc, id_user, id_corte } = req.params;
 
+    // console.log(id_suc, id_user, id_corte)
+
     try {
 
         // const detallesFound = await Detalle.find({
@@ -396,6 +399,7 @@ const getDataReportVenta = async (req, res = response) => {
             status: true, sucursal: id_suc, user: id_user, corte: id_corte
         }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
 
+        // console.log(ventaFound)
         // console.log(detallesFound)
 
         // let totales = detallesFound.map(item => {
@@ -407,6 +411,89 @@ const getDataReportVenta = async (req, res = response) => {
         // console.log(ventaFound.concat(detallesFound))
 
         if (ventaFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(detallesFound)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
+
+
+const ventaSucTotales = async (req, res = response) => {
+
+    const { i, f } = req.params;
+
+    try {
+
+        // const detallesFound = await Venta.aggregate([
+        //     { $match: { status: true } },
+        //     // {
+        //     //     $group: {
+        //     //         "$sucursal": ObjectId(null),
+        //     //     }
+        //     // },
+        //     {
+        //         $project: {
+        //             precio_total: { $sum: "$total_venta" },
+        //             sucursal: "$sucursal.name",
+        //             precio: "$precio",
+        //             cantidad_total: "$cantidad",
+        //             nombre_producto: "$nombre_producto",
+        //         }
+        //     }
+        // ])
+
+
+
+        // const detallesFound = await Venta.find(
+        //     { status: true },
+        //     { totales: { $sum: "$total_venta" } })
+        //     .populate('sucursal').populate('user').populate('corte');
+
+        const corteFound = await Corte.find({
+            status: true, estado: "Cerrado",
+            fecha_venta_cierre_caja: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+            // createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+        });
+
+        let cortesCerrados = corteFound.map(item => {
+            return ObjectId(item._id)
+        })
+        // console.log(cortesCerrados)
+
+        const detallesFound = await Venta.aggregate(
+            [{ $match: { status: true, corte: { $in: cortesCerrados } } },
+            {
+                $group:
+                {
+                    _id: "$sucursal",
+
+                    totales: { $sum: "$total_venta" },
+                    count: { $sum: 1 }
+                }
+            }
+            ])
+        // .populate('sucursal').populate('user').populate('corte');
+
+
+        // console.log(detallesFound)
+
+        // const ventaFound = await Venta.find({
+        //     status: true, sucursal: id_suc, user: id_user, corte: id_corte
+        // }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
+
+
+
+        if (detallesFound.length === 0) {
             return res.status(201).json([])
         } else {
             return res.status(200).json(detallesFound)
@@ -434,5 +521,6 @@ module.exports = {
     getTodosVentasUser,
     getTodosVentasUserAsc,
     getVentaAsc,
-    getVentaSuc
+    getVentaSuc,
+    ventaSucTotales
 }

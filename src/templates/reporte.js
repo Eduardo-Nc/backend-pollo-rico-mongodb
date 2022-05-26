@@ -9,7 +9,7 @@ module.exports = (compras, datos, HoraActual) => {
     // console.log(compras)
     // console.log(datos)
     // console.log(HoraActual)
-    console.log(totalFactura)
+    // console.log(totalFactura)
 
     return `
 

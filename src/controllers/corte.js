@@ -1,6 +1,8 @@
 const { response } = require('express');
 const Corte = require("../models/corte");
-
+const Venta = require("../models/venta");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 
 const createCorte = async (req, res = response) => {
@@ -27,21 +29,25 @@ const getCorteTotal = async (req, res = response) => {
 
 
     try {
-
-        const corteFound = await Corte.findOne({
+        const corteFound = await Corte.find({
             status: true, estado: "Cerrado",
             fecha_venta_cierre_caja: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+            // createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
         });
 
+        let cortesCerrados = corteFound.map(item => {
+            return ObjectId(item._id)
+        })
+        // console.log(cortesCerrados)
 
-        if (corteFound === null) {
-            return res.status(201).json({
-                ok: false,
-                msg: 'No fueron encontrados corte registrados',
-                total_venta: 0
-            })
+        const detallesFound = await Venta.find({ status: true, corte: { $in: cortesCerrados } }, { totales: { $sum: "$total_venta" } });
+
+        console.log(detallesFound.length)
+
+        if (detallesFound.length === 0) {
+            return res.status(201).json([])
         } else {
-            return res.status(200).json({ total_venta: Object.keys(corteFound).length })
+            return res.status(200).json(detallesFound)
         }
 
     } catch (error) {
@@ -53,26 +59,68 @@ const getCorteTotal = async (req, res = response) => {
     }
 }
 
+const getCorteDia = async (req, res = response) => {
+
+    const { i, f } = req.params;
+
+
+    try {
+        const corteFound = await Corte.find({
+            status: true, estado: "Cerrado",
+            createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+            // createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+        });
+
+        console.log(corteFound)
+
+        if (corteFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(corteFound)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
 const getCorteTotalSuc = async (req, res = response) => {
 
     const { i, f, id_suc } = req.params;
 
+
     try {
-
         const corteFound = await Corte.findOne({
-            status: true, sucursal: id_suc, estado: "Cerrado",
+            status: true, estado: "Cerrado", sucursal: ObjectId(id_suc),
             fecha_venta_cierre_caja: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
-        });
+            // createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+        }).sort({ $natural: -1 });
 
+        // console.log(corteFound)
+        // console.log("skjsiojioajopsjopsdjopsdjopjo")
+
+        // let cortesCerrados = corteFound.map(item => {
+        //     return ObjectId(item._id)
+        // })
+        // console.log(cortesCerrados)
 
         if (corteFound === null) {
-            return res.status(201).json({
-                ok: false,
-                msg: 'No fueron encontrados corte registrados',
-                total_venta: 0
-            })
+            return res.status(201).json([])
+        }
+
+        const detallesFound = await Venta.find({ status: true, corte: ObjectId(corteFound._id) }, { totales: { $sum: "$total_venta" } });
+
+        console.log(detallesFound)
+
+        if (detallesFound.length === 0) {
+            return res.status(201).json([])
         } else {
-            return res.status(200).json({ total_venta: Object.keys(corteFound).length })
+            return res.status(200).json(detallesFound)
         }
 
     } catch (error) {
@@ -89,15 +137,37 @@ const getCorteTotalSuc = async (req, res = response) => {
 const getCorte = async (req, res = response) => {
     try {
 
-        const bebidaFound = await Corte.find();
+        const Found = await Corte.find().sort({ $natural: -1 }).populate('user').populate('sucursal');
 
-        if (bebidaFound === 0) {
-            return res.status(404).json({
-                ok: false,
-                msg: 'No fueron encontrados bebidas registrados'
-            })
+        if (Found.length === 0) {
+            return res.status(201).json([])
         } else {
-            return res.status(200).json(bebidaFound)
+            return res.status(200).json(Found)
+        }
+
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+const getCorteSuc = async (req, res = response) => {
+
+    const { id_suc } = req.params;
+
+    try {
+
+        const Found = await Corte.find({ sucursal: id_suc }).sort({ $natural: -1 }).populate('user').populate('sucursal');
+
+        if (Found.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(Found)
         }
 
 
@@ -205,7 +275,7 @@ const getUltimoCorteUser = async (req, res = response) => {
 
     try {
 
-        const Found = await Corte.findOne({ status: true, user: id_user }).sort({ createdAt: -1 }).populate('user');
+        const Found = await Corte.findOne({ status: true, user: id_user }).sort({ createdAt: -1 }).populate('user').populate('sucursal');
 
 
         if (Found === null) {
@@ -235,7 +305,7 @@ const getCorteCorreo = async (req, res = response) => {
 
     try {
 
-        const Found = await Corte.find({ status: true }).sort({ createdAt: -1 }).populate('user');
+        const Found = await Corte.find({ status: true }).sort({ createdAt: -1 }).populate('user').populate('sucursal');
 
         let r = Found.filter(item => item.user.correo === correo);
 
@@ -267,7 +337,7 @@ const corteCorreo = async (req, res = response) => {
 
         const Found = await Corte.find({
             status: true, estado: "Activo"
-        }).populate('user');
+        }).populate('user').populate('sucursal');
 
 
         let r = Found.find(item => item.user.correo === correo)
@@ -326,7 +396,9 @@ const corteCorreoRol = async (req, res = response) => {
 module.exports = {
     createCorte,
     getCorte,
+    getCorteSuc,
     getCorteTotal,
+    getCorteDia,
     getCorteTotalSuc,
     updatedCorte,
     deactivateCorte,

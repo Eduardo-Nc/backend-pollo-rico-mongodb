@@ -523,7 +523,7 @@ const loginUser = async (req, res = response) => {
         // console.log("validPassword: " + validPassword)
 
         if (validPassword === false) {
-            return res.status(400).json({
+            return res.status(201).json({
                 ok: false,
                 msg: 'Contraseña incorrecta'
             });
