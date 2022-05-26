@@ -1,6 +1,7 @@
 const { response } = require('express');
 const Detalle = require("../models/detalle");
-
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 
 const createDetalle = async (req, res = response) => {
@@ -136,12 +137,65 @@ const deactivateDetalle = async (req, res = response) => {
 }
 
 
+const getDetallesModal = async (req, res = response) => {
 
+    const { id_suc, id_user, id_venta } = req.params;
+
+    try {
+
+        // const detallesFound = await Detalle.find({
+        //     status: true, corte: id_corte
+        // }, {});
+
+        // total_venta: { $multiply: ["$cantidad", "$precio"] }
+
+        const detallesFound = await Detalle.aggregate([
+            { $match: { status: true, venta: ObjectId(id_venta) } },
+            {
+                $project: {
+                    precio_total: { $multiply: ["$cantidad", "$precio"] },
+                    precio: "$precio",
+                    cantidad_total: "$cantidad",
+                    nombre_producto: "$nombre_producto",
+                    fecha_venta: "$fecha_venta"
+                }
+            }
+        ])
+
+        // const ventaFound = await Venta.find({
+        //     status: true, sucursal: id_suc, user: id_user, corte: id_corte
+        // }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
+
+        console.log(detallesFound)
+
+        // let totales = detallesFound.map(item => {
+        //     return item.total
+        // })
+
+        // let cantidad_total = lodash.sum(totales)
+
+        // console.log(ventaFound.concat(detallesFound))
+
+        if (detallesFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(detallesFound)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
 
 
 module.exports = {
     createDetalle,
     getDetalle,
     updatedDetalle,
-    deactivateDetalle
+    deactivateDetalle,
+    getDetallesModal
 }

@@ -4,7 +4,7 @@ module.exports = (compras, datos, HoraActual) => {
 
     let totalFactura = compras.reduce((sum, value) => (typeof value.precio_total == "number" ? sum + value.precio_total : sum), 0);
 
-    console.log("LLEGO AL PDF")
+    console.log("LLEGO AL PDF REPORTE")
 
     // console.log(compras)
     // console.log(datos)
@@ -149,7 +149,7 @@ module.exports = (compras, datos, HoraActual) => {
            ${compras.map(element =>
         `<tr>
          <td>${element.nombre_producto}</td>
-         <td>$${element.precio_total / element.cantidad_total}.00</td>
+         <td>$${element.precio}.00</td>
          <td>${element.cantidad_total}</td>
          <td>$${element.precio_total}.00</td>
      </tr>`

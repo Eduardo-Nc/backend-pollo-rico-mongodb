@@ -24,6 +24,14 @@ const detalleSchema = Schema({
         defaultValue: new Date(),
         require: true
     },
+    corte: {
+        type: Schema.Types.ObjectId,
+        ref: "corte"
+    },
+    venta: {
+        type: Schema.Types.ObjectId,
+        ref: "venta"
+    },
     status:
     {
         type: Boolean,

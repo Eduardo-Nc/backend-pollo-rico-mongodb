@@ -2,8 +2,8 @@ module.exports = (compra, datos, HoraActual) => {
 
 
     let total = (Object.values(compra).reduce((acc, { cantidad, precio_producto }) => acc + cantidad * precio_producto, 0));
-    console.log("hora de ticket")
-    console.log(HoraActual)
+    // console.log("hora de ticket")
+    // console.log(HoraActual)
 
 
     return `
@@ -275,11 +275,13 @@ module.exports = (compra, datos, HoraActual) => {
                    <div>Total: $${total}.00</div>
                    <div>Efectivo: $${datos.efectivo}.00</div>
                    <div>Cambio: $${datos.cambio}.00</div>
-
+        
                </div>
 
            </div>
        <div class="content-folio-footer">
+       <div>${datos.nota}</div>
+       <br></br>
                    <div>Gracias por su visita, vuelva pronto.</div>
                    <div>Síguenos fb/elpollorico</div>
        </div>

@@ -2,8 +2,10 @@ const { response } = require('express');
 const Venta = require("../models/venta");
 const moment = require('moment-timezone');
 const Sucursal = require("../models/sucursal");
-
-
+const Detalle = require("../models/detalle");
+const lodash = require('lodash')
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 
 const createVenta = async (req, res = response) => {
@@ -36,11 +38,12 @@ const createVenta = async (req, res = response) => {
         venta.folio = `${abreviaturaSuc}${fechaFolio}-${fill(folio, 3)}`;
 
 
-        await venta.save();
+        let saveVenta = await venta.save();
 
         res.status(201).json({
             ok: true,
             msg: 'La Venta fue creada correctamente',
+            id: saveVenta._id
         })
 
     } catch (error) {
@@ -253,6 +256,116 @@ const getUltimaVenta = async (req, res = response) => {
 }
 
 
+const getTodosVentasUser = async (req, res = response) => {
+
+    const { id_user } = req.params;
+
+
+    try {
+        const ventaFound = await Venta.find({
+            status: true, user: id_user
+        }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
+
+        // console.log(ventaFound)
+
+        if (ventaFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(ventaFound)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+const getTodosVentasUserAsc = async (req, res = response) => {
+
+    const { id_user } = req.params;
+
+
+    try {
+        const ventaFound = await Venta.find({
+            status: true, user: id_user
+        }).sort({ $natural: 1 }).populate('sucursal').populate('user').populate('corte');
+
+        // console.log(ventaFound)
+
+        if (ventaFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(ventaFound)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
+
+const getDataReportVenta = async (req, res = response) => {
+
+    const { id_suc, id_user, id_corte } = req.params;
+
+    try {
+
+        // const detallesFound = await Detalle.find({
+        //     status: true, corte: id_corte
+        // }, {});
+
+        // total_venta: { $multiply: ["$cantidad", "$precio"] }
+
+        const detallesFound = await Detalle.aggregate([
+            { $match: { status: true, corte: ObjectId(id_corte) } },
+            {
+                $project: {
+                    precio_total: { $multiply: ["$cantidad", "$precio"] },
+                    precio: "$precio",
+                    cantidad_total: "$cantidad",
+                    nombre_producto: "$nombre_producto",
+                }
+            }
+        ])
+
+        const ventaFound = await Venta.find({
+            status: true, sucursal: id_suc, user: id_user, corte: id_corte
+        }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
+
+        // console.log(detallesFound)
+
+        // let totales = detallesFound.map(item => {
+        //     return item.total
+        // })
+
+        // let cantidad_total = lodash.sum(totales)
+
+        // console.log(ventaFound.concat(detallesFound))
+
+        if (ventaFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(detallesFound)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
 module.exports = {
     createVenta,
     getVenta,
@@ -260,5 +373,8 @@ module.exports = {
     getVentaCantidadSucRoot,
     updatedVenta,
     deactivateVenta,
-    getUltimaVenta
+    getUltimaVenta,
+    getDataReportVenta,
+    getTodosVentasUser,
+    getTodosVentasUserAsc
 }

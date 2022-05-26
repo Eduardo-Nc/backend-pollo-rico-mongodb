@@ -279,6 +279,7 @@ module.exports = (compras) => {
 
            </div>
        <div class="content-folio-footer">
+       <div>${compras[0].nota}</div>
                    <div>Gracias por su visita, vuelva pronto.</div>
                    <div>Síguenos fb/elpollorico</div>
                   

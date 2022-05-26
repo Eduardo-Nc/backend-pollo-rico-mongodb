@@ -535,6 +535,7 @@ const loginUser = async (req, res = response) => {
         const token = await generarJWT(usuario._id, usuario.nombre_completo_usuario);
 
         // console.log(token)
+        // console.log(usuario)
 
         res.status(200).json({
             ok: true,
