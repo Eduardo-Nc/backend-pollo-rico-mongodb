@@ -455,6 +455,142 @@ const enviarCredenciales = async (req, res = response) => {
 }
 
 
+const recPass = async (req, res = response) => {
+
+    const { correo } = req.body;
+
+    try {
+
+        let contrasena = "EPR-" + Math.floor(Math.random() * (999999 - 1)) + 10;
+
+        let findUser = await User.findOne({ correo: correo });
+
+        // console.log(findUser)
+
+        // Encriptar contraseña
+        const salt = bcrypt.genSaltSync();
+        let newContrasena = bcrypt.hashSync(contrasena, salt);
+
+        const updatedUser = await User.findByIdAndUpdate(
+            findUser._id,
+            { contrasena: newContrasena },
+            {
+                new: true,
+            }
+        );
+
+
+        if (!updatedUser) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Usuario no encontrado'
+            })
+        }
+        else {
+
+
+            htmlTextEmail = `
+            <style type="text/css">
+            *{
+              font-family:Arial;
+              text-align:center;
+            }
+            content {
+              display:flex;
+              flex-flow:column nowrap;
+              justify-content:center;
+              align-items: center;
+              text-align: center;
+              width:100%;
+              height:1300px;
+              color: white;
+              border-radius: 7px;
+              border:4px solid blue;
+            }
+            h1{
+                font-size:26px;
+                text-transform: capitalize;
+            }
+            label{
+              font-size:25px;
+            }
+          
+            a.button {
+              -webkit-appearance: button;
+              -moz-appearance: button;
+              appearance: button;
+              font-size:25px;
+              color:blue;
+              text-decoration: none;
+              color: initial;
+          }
+          
+            strong{
+              font-size:25px;
+            }
+            </style>
+          
+            <div id="content">
+            <h1>Hola ${findUser.nombre_completo_usuario}</h1>
+            <br /> 
+            <label>Hemos detectado que has olvidado tu contraseña.</label>
+            <br /> <br /> 
+            <label id="contrasena">Tu contraseña es: </label> 
+            <br /> 
+            <strong>${contrasena}</strong>
+            <br /> <br /> 
+            <a href="https://elpollorico.com.mx/" class="button">Ir a El Pollo Rico</a>
+            </div>
+            `;
+
+            let transporter = nodemailer.createTransport({
+                host: "smtp.office365.com",
+                port: 587,
+                secure: false,
+                auth: {
+                    user: "elpollorico_mx@hotmail.com",
+                    pass: "*1991Akil*",
+                },
+            });
+
+            let mailOptions = {
+                from: "elpollorico_mx@hotmail.com",
+                to: [correo],
+                subject: "Sistema de recuperación de contraseñas",
+                html: htmlTextEmail,
+            };
+            //
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log(error)
+                    res.status(500).json({
+                        ok: false,
+                        msg: 'Un error fue detectado, por favor habla con el administrador'
+                    });
+                } else {
+                    res.status(201).json({
+                        ok: true,
+                        msg: 'El usuario fue creado correctamente, sus datos de acceso fueron enviados a su corro electrónico',
+                    })
+                }
+            });
+
+
+            return res.status(200).json({
+                ok: true,
+                msg: 'Usuario fue actualizado correctamente'
+            });
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        });
+    }
+}
+
 const updateTokenAppUser = async (req, res = response) => {
 
     const { user_id } = req.params;
@@ -668,5 +804,6 @@ module.exports = {
     revalidateToken,
     updateUser,
     deleteUser,
-    enviarCredenciales
+    enviarCredenciales,
+    recPass
 }
