@@ -62,7 +62,7 @@ app.use('/api/complemento', require('./src/routes/complemento.routes'));
 
 app.use('/api/user', require('./src/routes/user.routes'));
 app.use('/api/rol', require('./src/routes/role.routes'));
-
+app.use('/api/ticket', require('./src/routes/ticket.routes'));
 
 app.use('/api/reporte', require('./src/routes/reporte.routes'));
 

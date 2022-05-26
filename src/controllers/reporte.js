@@ -114,12 +114,13 @@ const reimprimirTicket = async (req, res = response) => {
 
     let compra = req.body;
     let datos = req.params;
-    console.log(compra)
-    console.log(datos)
+    // console.log(compra)
+    // console.log(datos)
+    let HoraA = moment(datos.hora_actual).tz('America/Merida').format('YYYY-MM-DD hh:mm A');
 
     try {
 
-        let r = pdf.create(ticket(compra, datos, HoraActual), options).toFile(`${process.cwd()}/src/facturas/reimpresion.pdf`, (err) => {
+        let r = pdf.create(pdfTemplateReimprecion(compra, datos, HoraA), options).toFile(`${process.cwd()}/src/facturas/reimpresion.pdf`, (err) => {
             if (err) {
                 console.log(err)
                 res.send(Promise.reject());

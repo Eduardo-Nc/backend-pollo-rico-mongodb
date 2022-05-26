@@ -1,7 +1,9 @@
-module.exports = (compras) => {
+module.exports = (compra, datos, HoraActual) => {
 
-    const moment = require('moment');
-    moment.locale('es');
+
+    let total = (Object.values(compra).reduce((acc, { cantidad, precio_producto }) => acc + cantidad * precio_producto, 0));
+    // console.log("hora de ticket")
+    // console.log(HoraActual)
 
 
     return `
@@ -217,10 +219,9 @@ module.exports = (compras) => {
     }
     
     .img-ticket{
-        margin-top:10px;
         width: 100%;
         height: 100%;
-
+        margin-top:10px;
     }
 
     .img-ticket img{
@@ -231,8 +232,8 @@ module.exports = (compras) => {
     #separador1{
         border-bottom:1px dashed black;
         width: 100%;
-   
     }
+    
 
 
       </style>
@@ -243,12 +244,12 @@ module.exports = (compras) => {
    <div class="content-all-pdf">
 
        <div class="encabezado">
-            <h2 id="nom">El Pollo Rico "${compras[0].nombre_sucursal}"</h2>
-            <h2 id="folio-pdf">Folio: ${compras[0].folio}</h2>
-            <h2 id="tel">Telefóno: ${compras[0].numero_tel}</h2>
-            <h2 id="direc">Dirección: ${compras[0].direccion}</h2>
-            <h2 id="tel">RFC:CANJ570416953</h2>
-            <h2 id="fecha">Fecha: ${moment(new Date(compras[0].fecha_venta)).format('YYYY-MM-DD HH:mm:ss A')}</h2>
+           <h2 id="nom">El Pollo Rico "${datos.sucursal}"</h2>
+           <h2 id="folio-pdf">Folio: ${datos.folio}</h2>
+           <h2 id="tel">Telefóno: ${datos.numero}</h2>
+           <h2 id="direc">Dirección: ${datos.direccion}</h2>
+           <h2 id="tel">RFC:CANJ570416953</h2>
+           <h2 id="fecha">Fecha: ${HoraActual}</h2>
        </div>
 
            <div class="content-detalle-corte">
@@ -260,32 +261,31 @@ module.exports = (compras) => {
                <th>Descripción</th>
                <th>Precio</th>
            </tr>
-           ${compras.map(element =>
+           ${compra.map(element =>
         `<tr>
                <td>${element.cantidad}</td>
                <td>${element.nombre_producto}</td>
-               <td>$${element.cantidad * element.precio}.00</td>
+               <td>$${element.cantidad * element.precio_producto}.00</td>
            </tr>`
     )}
        </table>
                
                <div class="content-total">
                    
-                   <div>Total: $${compras[0].total_venta}.00</div>
-                   <div>Efectivo: $${compras[0].efectivo}.00</div>
-                   <div>Cambio: $${compras[0].cambio}.00</div>
-
+                   <div>Total: $${total}.00</div>
+                   <div>Efectivo: $${datos.efectivo}.00</div>
+                   <div>Cambio: $${datos.cambio}.00</div>
+        
                </div>
 
            </div>
        <div class="content-folio-footer">
-       <div>${compras[0].nota}</div>
+       <div>${datos.nota}</div>
+       <br></br>
                    <div>Gracias por su visita, vuelva pronto.</div>
                    <div>Síguenos fb/elpollorico</div>
-                  
                    <br></br>
-                   <div>******Reimpresión******</div>
-
+<div>******Reimpresión******</div>
        </div>
 
    </div>
