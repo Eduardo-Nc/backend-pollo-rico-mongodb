@@ -332,6 +332,7 @@ const corteCorreo = async (req, res = response) => {
 
     const { correo } = req.params;
 
+    // console.log(correo)
 
     try {
 
@@ -339,9 +340,11 @@ const corteCorreo = async (req, res = response) => {
             status: true, estado: "Activo"
         }).populate('user').populate('sucursal');
 
+        // console.log(Found)
 
         let r = Found.find(item => item.user.correo === correo)
 
+        // console.log(r)
 
         if (r === undefined) {
             return res.status(201).json({})

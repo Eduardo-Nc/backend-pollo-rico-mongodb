@@ -26,6 +26,8 @@ router.get('/email/:correo', getCorteCorreo);
 
 router.get('/:correo', corteCorreo);
 
+router.get('/corr/:correo', corteCorreo);
+
 router.get('/permiso/:correo', corteCorreoRol);
 
 
