@@ -280,7 +280,7 @@ module.exports = (compra, datos, HoraActual) => {
 
            </div>
        <div class="content-folio-footer">
-       <div>${datos.nota}</div>
+       <div>${datos.nota ? datos.nota : ""}</div>
        <br></br>
                    <div>Gracias por su visita, vuelva pronto.</div>
                    <div>Síguenos fb/elpollorico</div>

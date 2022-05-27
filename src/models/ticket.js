@@ -13,7 +13,7 @@ const ticketSchema = Schema({
     },
     nota: {
         type: String,
-        require: true
+        require: false
     },
     hora_actual: {
         type: Date,

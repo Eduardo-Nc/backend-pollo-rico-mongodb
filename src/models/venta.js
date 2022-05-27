@@ -34,7 +34,7 @@ const ventaSchema = Schema({
     },
     nota: {
         type: String,
-        require: true
+        require: false
     },
     corte: {
         type: Schema.Types.ObjectId,
