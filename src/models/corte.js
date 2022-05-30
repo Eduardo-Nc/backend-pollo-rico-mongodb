@@ -39,12 +39,12 @@ const corteSchema = Schema({
         type: String,
         require: true
     },
-    // sucursal:
-    // {
-    //     type: Schema.Types.ObjectId,
-    //     ref: "sucursal",
-    //     require: false
-    // },
+    sucursal:
+    {
+        type: Schema.Types.ObjectId,
+        ref: "sucursal",
+        require: false
+    },
     status:
     {
         type: Boolean,
