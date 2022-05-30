@@ -20,7 +20,7 @@ const createVenta = async (req, res = response) => {
 
     try {
 
-        const cantVentas = await Venta.find({ status: true, sucursal: id_suc, createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') } });
+        const cantVentas = await Venta.find({ status: true, sucursal: id_suc, createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T23:59:59.999Z') } });
         let fechaFolio = moment().tz('America/Merida').format('YYYYMMDD');
         const sucursalFound = await Sucursal.findById(id_suc);
         let abreviaturaSuc = sucursalFound.abreviatura;
@@ -90,7 +90,7 @@ const getVentaCantidadSuc = async (req, res = response) => {
 
         const CantVentas = await Venta.find({
             status: true, sucursal: id_suc,
-            createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+            createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T23:59:59.999Z') },
         });
 
         // console.log(CantVentas)
@@ -124,7 +124,7 @@ const getVentaCantidadSucRoot = async (req, res = response) => {
 
         const CantVentas = await Venta.find({
             status: true,
-            createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+            createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T23:59:59.999Z') },
         });
 
         // console.log(CantVentas)
@@ -392,8 +392,29 @@ const getDataReportVenta = async (req, res = response) => {
                     cantidad_total: "$cantidad",
                     nombre_producto: "$nombre_producto",
                 }
-            }
+            },
+            { $group: { _id: "$nombre_producto", nombre_producto: { $first: "$nombre_producto" }, cantidad_total: { $sum: "$cantidad_total" }, precio: { $first: "$precio" }, precio_total: { $sum: "$precio_total" } } },
         ])
+
+        // const detallesFounds = await Detalle.aggregate([
+        //     { $match: { status: true, corte: ObjectId(id_corte) } },
+        //     { $group: { _id: { nombre_producto: "$nombre_producto", precio: "$precio", cantidad_total: { $sum: 1 }, precio_total: { $multiply: ["$cantidad", "$precio"] } }, count: { $sum: 1 } } },
+        // ])
+
+
+        // console.log(detallesFounds)
+
+        // const detallesFound = await Detalle.aggregate([
+        //     { $match: { status: true, corte: ObjectId(id_corte) } },
+        //     {
+        //         $project: {
+        //             precio_total: { $multiply: ["$cantidad", "$precio"] },
+        //             precio: "$precio",
+        //             cantidad_total: "$cantidad",
+        //             nombre_producto: "$nombre_producto",
+        //         }
+        //     }
+        // ])
 
         const ventaFound = await Venta.find({
             status: true, sucursal: id_suc, user: id_user, corte: id_corte
@@ -461,7 +482,7 @@ const ventaSucTotales = async (req, res = response) => {
 
         const corteFound = await Corte.find({
             status: true, estado: "Cerrado",
-            fecha_venta_cierre_caja: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+            fecha_venta_cierre_caja: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T23:59:59.999Z') },
             // createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
         });
 

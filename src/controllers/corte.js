@@ -27,13 +27,17 @@ const getCorteTotal = async (req, res = response) => {
 
     const { i, f } = req.params;
 
+    // console.log(new Date(i + 'T00:00:00.000Z'))
+    // console.log(new Date(f + 'T00:00:00.000Z'))
 
     try {
         const corteFound = await Corte.find({
             status: true, estado: "Cerrado",
-            fecha_venta_cierre_caja: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+            fecha_venta_cierre_caja: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(i + 'T23:59:59.999Z') },
             // createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
         });
+
+        console.log(corteFound)
 
         let cortesCerrados = corteFound.map(item => {
             return ObjectId(item._id)
@@ -67,7 +71,7 @@ const getCorteDia = async (req, res = response) => {
     try {
         const corteFound = await Corte.find({
             status: true, estado: "Cerrado",
-            createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+            createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T23:59:59.999Z') },
             // createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
         });
 
@@ -97,7 +101,7 @@ const getCorteTotalSuc = async (req, res = response) => {
     try {
         const corteFound = await Corte.findOne({
             status: true, estado: "Cerrado", sucursal: ObjectId(id_suc),
-            fecha_venta_cierre_caja: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
+            fecha_venta_cierre_caja: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T23:59:59.999Z') },
             // createdAt: { $gte: new Date(i + 'T00:00:00.000Z'), $lte: new Date(f + 'T00:00:00.000Z') },
         }).sort({ $natural: -1 });
 
