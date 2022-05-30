@@ -16,6 +16,7 @@ router.get('/fetch-pdf-ticket', getTicket);
 
 
 router.post('/reimprimir/create-pdf/:folio/:sucursal/:numero/:direccion/:efectivo/:cambio/:nota/:hora_actual', reimprimirTicket);
+router.post('/reimprimir/create-pdf/:folio/:sucursal/:numero/:direccion/:efectivo/:cambio/:hora_actual', reimprimirTicket);
 router.get('/reimprimir/fetch-pdf-ticket', getReimprimirTicket);
 
 module.exports = router;
