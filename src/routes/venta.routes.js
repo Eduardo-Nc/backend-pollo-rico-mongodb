@@ -23,6 +23,8 @@ router.put('/:id', updatedVenta);
 
 router.get('/ultimo/:id_suc', getUltimaVenta);
 
+router.get('/ultimo/v2/:id_suc', getUltimaVenta);
+
 router.get('/data/report/:id_suc/:id_user/:id_corte', getDataReportVenta);
 
 router.get('/todos/:id_user', getTodosVentasUser);
