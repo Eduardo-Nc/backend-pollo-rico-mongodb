@@ -55,13 +55,72 @@ const createVenta = async (req, res = response) => {
 const getVentaSuc = async (req, res = response) => {
 
     const { id_suc } = req.params;
+    let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD');
 
 
     try {
 
         const ventaFound = await Venta.find({
-            status: true, sucursal: id_suc
+            status: true, sucursal: id_suc,
+            createdAt: { $gte: new Date(HoraActual + 'T00:00:00.000Z'), $lte: new Date(HoraActual + 'T23:59:59.999Z') }
+        }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
 
+        if (ventaFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(ventaFound)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
+const getVentaSucxDia = async (req, res = response) => {
+
+    const { id_suc, inicial, final } = req.params;
+    let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD');
+
+
+    try {
+
+        const ventaFound = await Venta.find({
+            status: true, sucursal: id_suc,
+            createdAt: { $gte: new Date(inicial + 'T00:00:00.000Z'), $lte: new Date(final + 'T23:59:59.999Z') }
+        }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
+
+        if (ventaFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(ventaFound)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
+const getVentaSucxDiaIDSUC = async (req, res = response) => {
+
+    const { id, inicial, final } = req.params;
+    let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD');
+
+
+    try {
+
+        const ventaFound = await Venta.find({
+            status: true, sucursal: id,
+            createdAt: { $gte: new Date(inicial + 'T00:00:00.000Z'), $lte: new Date(final + 'T23:59:59.999Z') }
         }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
 
         if (ventaFound.length === 0) {
@@ -149,9 +208,46 @@ const getVentaCantidadSucRoot = async (req, res = response) => {
 }
 
 const getVenta = async (req, res = response) => {
+
+    let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD');
+
+
     try {
 
-        const bebidaFound = await Venta.find().sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
+        const bebidaFound = await Venta.find({
+            createdAt: { $gte: new Date(HoraActual + 'T00:00:00.000Z'), $lte: new Date(HoraActual + 'T23:59:59.999Z') }
+        }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
+
+        // console.log(bebidaFound)
+
+        if (bebidaFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(bebidaFound)
+        }
+
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
+const getVentaxDia = async (req, res = response) => {
+
+    const { id_suc, inicial, final } = req.params;
+
+
+    try {
+
+        const bebidaFound = await Venta.find({
+            createdAt: { $gte: new Date(inicial + 'T00:00:00.000Z'), $lte: new Date(final + 'T23:59:59.999Z') }
+        }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
 
         // console.log(bebidaFound)
 
@@ -316,11 +412,11 @@ const getUltimaVenta = async (req, res = response) => {
 const getTodosVentasUser = async (req, res = response) => {
 
     const { id_user } = req.params;
-
+    let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD');
 
     try {
         const ventaFound = await Venta.find({
-            status: true, user: id_user
+            status: true, user: id_user, createdAt: { $gte: new Date(HoraActual + 'T00:00:00.000Z'), $lte: new Date(HoraActual + 'T23:59:59.999Z') }
         }).sort({ $natural: -1 }).populate('sucursal').populate('user').populate('corte');
 
         // console.log(ventaFound)
@@ -343,11 +439,41 @@ const getTodosVentasUser = async (req, res = response) => {
 const getTodosVentasUserAsc = async (req, res = response) => {
 
     const { id_user } = req.params;
+    let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD');
 
+    // console.log(HoraActual)
 
     try {
         const ventaFound = await Venta.find({
-            status: true, user: id_user
+            status: true, user: id_user, createdAt: { $gte: new Date(HoraActual + 'T00:00:00.000Z'), $lte: new Date(HoraActual + 'T23:59:59.999Z') }
+        }).sort({ $natural: 1 }).populate('sucursal').populate('user').populate('corte');
+
+        // console.log(ventaFound.length)
+
+        if (ventaFound.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(ventaFound)
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+
+const getTodosxDiaVentasUserAsc = async (req, res = response) => {
+
+    const { id_user, inicial, final } = req.params;
+    // let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD');
+
+    try {
+        const ventaFound = await Venta.find({
+            status: true, user: id_user, createdAt: { $gte: new Date(inicial + 'T00:00:00.000Z'), $lte: new Date(final + 'T23:59:59.999Z') }
         }).sort({ $natural: 1 }).populate('sucursal').populate('user').populate('corte');
 
         // console.log(ventaFound)
@@ -366,7 +492,6 @@ const getTodosVentasUserAsc = async (req, res = response) => {
         })
     }
 }
-
 
 
 const getDataReportVenta = async (req, res = response) => {
@@ -533,6 +658,7 @@ const ventaSucTotales = async (req, res = response) => {
 module.exports = {
     createVenta,
     getVenta,
+    getVentaxDia,
     getVentaCantidadSuc,
     getVentaCantidadSucRoot,
     updatedVenta,
@@ -541,7 +667,9 @@ module.exports = {
     getDataReportVenta,
     getTodosVentasUser,
     getTodosVentasUserAsc,
+    getTodosxDiaVentasUserAsc,
     getVentaAsc,
+    getVentaSucxDia,
     getVentaSuc,
     ventaSucTotales
 }

@@ -3,6 +3,9 @@ const Corte = require("../models/corte");
 const Venta = require("../models/venta");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
+const moment = require('moment-timezone');
+
+
 
 
 const createCorte = async (req, res = response) => {
@@ -306,10 +309,45 @@ const getCorteCorreo = async (req, res = response) => {
     const { correo } = req.params;
 
     // console.log(correo)
+    let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD');
 
     try {
 
-        const Found = await Corte.find({ status: true }).sort({ createdAt: -1 }).populate('user').populate('sucursal');
+
+
+        const Found = await Corte.find({ status: true, createdAt: { $gte: new Date(HoraActual + 'T00:00:00.000Z'), $lte: new Date(HoraActual + 'T23:59:59.999Z') } }).sort({ createdAt: -1 }).populate('user').populate('sucursal');
+
+        let r = Found.filter(item => item.user.correo === correo);
+
+        // console.log(r)
+
+        if (r.length === 0) {
+            return res.status(201).json([])
+        } else {
+            return res.status(200).json(r)
+        }
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+const getCorteCorreoxdia = async (req, res = response) => {
+
+    const { correo, inicial, final } = req.params;
+
+    // console.log(correo, inicial, final)
+    // let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD');
+
+    try {
+
+
+        const Found = await Corte.find({ status: true, createdAt: { $gte: new Date(inicial + 'T00:00:00.000Z'), $lte: new Date(final + 'T23:59:59.999Z') } }).sort({ createdAt: -1 }).populate('user').populate('sucursal');
 
         let r = Found.filter(item => item.user.correo === correo);
 
@@ -412,5 +450,6 @@ module.exports = {
     getUltimoCorteUser,
     getCorteCorreo,
     corteCorreo,
+    getCorteCorreoxdia,
     corteCorreoRol
 }
