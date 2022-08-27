@@ -308,14 +308,15 @@ const getCorteCorreo = async (req, res = response) => {
 
     const { correo } = req.params;
 
-    // console.log(correo)
+    // console.log("LIMIT 10")
     let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD');
 
     try {
 
+        // .limit(50)
 
 
-        const Found = await Corte.find({ status: true, createdAt: { $gte: new Date(HoraActual + 'T00:00:00.000Z'), $lte: new Date(HoraActual + 'T23:59:59.999Z') } }).sort({ createdAt: -1 }).populate('user').populate('sucursal');
+        const Found = await Corte.find({ status: true }).sort({ createdAt: -1 }).limit(10).populate('user').populate('sucursal');
 
         let r = Found.filter(item => item.user.correo === correo);
 
