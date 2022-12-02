@@ -13,6 +13,9 @@ let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD hh:mm A');
 const createTicket = async (req, res = response) => {
 
     var options = {
+        childProcessOptions: {
+            env: { OPENSSL_CONF: '/dev/null' }
+        },
         "height": "11in",
         "width": "83mm",
         "border": "0px",
@@ -46,7 +49,11 @@ const createTicket = async (req, res = response) => {
 }
 
 const createReporte = async (req, res = response) => {
-    var options = { format: 'Letter' };
+    var options = {
+        childProcessOptions: {
+            env: { OPENSSL_CONF: '/dev/null' }
+        }, format: 'Letter'
+    };
     let compras = req.body;
     let datos = req.params;
 
@@ -107,6 +114,9 @@ const getTicket = async (req, res = response) => {
 const reimprimirTicket = async (req, res = response) => {
 
     var options = {
+        childProcessOptions: {
+            env: { OPENSSL_CONF: '/dev/null' }
+        },
         "height": "11in",
         "width": "83mm",
         "border": "0px",
