@@ -217,6 +217,18 @@ module.exports = (compra, datos, HoraActual) => {
         width: 100%;
         font-size: 18px;
     }
+
+    .content-folio-footer-text{
+        width: 100%;
+        display:flex;
+        align-items:center;
+        text-align: center;
+        justify-content:center;
+        flex-flow: column nowrap;
+        overflow: hidden;
+        width: 100%;
+        font-size: 14px;
+    }
     
     .img-ticket{
         width: 100%;
@@ -281,13 +293,13 @@ module.exports = (compra, datos, HoraActual) => {
            </div>
        <div class="content-folio-footer">
        <div>${datos.nota ? datos.nota : ""}</div>
-       <br></br>
+     
                    <div>Gracias por su visita, vuelva pronto.</div>
                    <div>Síguenos fb/elpollorico</div>
-                   <br></br>
+                
                    <div>*******************</div>
-                   <br></br>
-                   <div>Ven y celebra con nosotros, nuestro 4 Aniversario, le invitamos este sábado 24 de Diciembre. Tendremos regalos y sorpresas para nuestros clientes.
+                  
+                   <div class="content-folio-footer-text">Ven y celebra con nosotros, nuestro 4 Aniversario, le invitamos este sábado 24 de Diciembre. Tendremos regalos y sorpresas para nuestros clientes.
                     <br></br>
                    ¡Les deseamos Felices fiestas y próspero 2023!</div>
        </div>
