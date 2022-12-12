@@ -56,6 +56,7 @@ module.exports = (compra, datos, HoraActual) => {
         border-bottom:1px dashed black;
         width: 100%;
         margin-bottom: 6px;
+        font-size: 18px;
     }
     
     .encabezado h2{
@@ -81,7 +82,7 @@ module.exports = (compra, datos, HoraActual) => {
     
     #folio-pdf{
         font-weight: normal;
-        font-size: 16px;
+        font-size: 14px;
         width: 100%;
         color:black;
         text-align: center; 
@@ -91,7 +92,7 @@ module.exports = (compra, datos, HoraActual) => {
     
     #tel{
         font-weight: normal;
-        font-size: 16px;
+        font-size: 14px;
         width: 100%;
         color:black;
         text-align: center; 
@@ -101,7 +102,7 @@ module.exports = (compra, datos, HoraActual) => {
     
     #direc{
         font-weight: normal;
-        font-size: 16px;
+        font-size: 14px;
         width: 100%;
         color:black;
         text-align: center; 
@@ -111,7 +112,7 @@ module.exports = (compra, datos, HoraActual) => {
     
     #fecha{
         font-weight: normal;
-        font-size: 16px;
+        font-size: 14px;
         width: 100%;
         color:black;
         text-align: center; 
@@ -202,7 +203,7 @@ module.exports = (compra, datos, HoraActual) => {
         flex-flow: row nowrap;
         overflow: hidden;
         width: 100%;
-        font-size: 22px;
+        font-size: 14px;
     }
     
     .content-folio-footer{
@@ -215,7 +216,7 @@ module.exports = (compra, datos, HoraActual) => {
         flex-flow: column nowrap;
         overflow: hidden;
         width: 100%;
-        font-size: 18px;
+        font-size: 14px;
     }
 
     .content-folio-footer-text{
@@ -246,6 +247,9 @@ module.exports = (compra, datos, HoraActual) => {
         width: 100%;
     }
     
+    .titulo-cantDescPre{
+        font-size: 14px;
+    }
 
 
       </style>
@@ -269,24 +273,24 @@ module.exports = (compra, datos, HoraActual) => {
 
            <table>
            <tr>
-               <th>Cant</th>
-               <th>Descripción</th>
-               <th>Precio</th>
+               <th class="titulo-cantDescPre">Cant</th>
+               <th class="titulo-cantDescPre">Descripción</th>
+               <th class="titulo-cantDescPre">Precio</th>
            </tr>
            ${compra.map(element =>
         `<tr>
-               <td>${element.cantidad}</td>
-               <td>${element.nombre_producto}</td>
-               <td>$${element.cantidad * element.precio_producto}.00</td>
+               <td class="titulo-cantDescPre">${element.cantidad}</td>
+               <td class="titulo-cantDescPre">${element.nombre_producto}</td>
+               <td class="titulo-cantDescPre">$${element.cantidad * element.precio_producto}.00</td>
            </tr>`
     )}
        </table>
                
                <div class="content-total">
                    
-                   <div>Total: $${total}.00</div>
-                   <div>Efectivo: $${datos.efectivo}.00</div>
-                   <div>Cambio: $${datos.cambio}.00</div>
+                   <div class="titulo-cantDescPre">Total: $${total}.00</div>
+                   <div class="titulo-cantDescPre">Efectivo: $${datos.efectivo}.00</div>
+                   <div class="titulo-cantDescPre">Cambio: $${datos.cambio}.00</div>
         
                </div>
 
