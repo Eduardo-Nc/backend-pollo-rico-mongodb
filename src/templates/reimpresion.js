@@ -293,10 +293,10 @@ module.exports = (compra, datos, HoraActual) => {
            </div>
        <div class="content-folio-footer">
        <div>${datos.nota ? datos.nota : ""}</div>
-       <br></br>
+      
                    <div>Gracias por su visita, vuelva pronto.</div>
                    <div>Síguenos fb/elpollorico</div>
-                   <br></br>
+             
 
 
 <div class="content-folio-footer-text">Ven y celebra con nosotros, nuestro 4 Aniversario, le invitamos este sábado 24 de Diciembre. Tendremos regalos y sorpresas para nuestros clientes.
