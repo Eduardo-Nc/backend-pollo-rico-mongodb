@@ -61,6 +61,7 @@ module.exports = (compra, datos, HoraActual) => {
     #nomdos{
         border-bottom:1px dashed black;
         width: 100%;
+        margin-top: 0px;
         margin-bottom: 6px;
         font-size: 18px;
     }
