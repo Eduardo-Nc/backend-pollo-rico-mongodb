@@ -260,7 +260,8 @@ module.exports = (compra, datos, HoraActual) => {
    <div class="content-all-pdf">
 
        <div class="encabezado">
-           <h2 id="nom">El Pollo Rico <br></br> "${datos.sucursal}"</h2>
+           <h2 id="nom">El Pollo Rico</h2>
+           <h2 id="nomdos">"${datos.sucursal}"</h2>
            <h2 id="folio-pdf">Folio: ${datos.folio}</h2>
            <h2 id="tel">Telefóno: ${datos.numero}</h2>
            <h2 id="direc">Dirección: ${datos.direccion}</h2>
