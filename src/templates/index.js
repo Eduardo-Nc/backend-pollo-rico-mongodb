@@ -309,11 +309,6 @@ module.exports = (compra, datos, HoraActual) => {
                    <div>Gracias por su visita, vuelva pronto.</div>
                    <div>Síguenos fb/elpollorico</div>
                 
-                   <div>*******************</div>
-                  
-                   <div class="content-folio-footer-text">Ven y celebra con nosotros, nuestro 4 Aniversario, le invitamos este sábado 24 de Diciembre. Tendremos regalos y sorpresas para nuestros clientes.
-                    <br></br>
-                   ¡Les deseamos Felices fiestas y próspero 2023!</div>
        </div>
 
    </div>
