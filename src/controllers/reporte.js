@@ -13,10 +13,6 @@ let HoraActual = moment().tz('America/Merida').format('YYYY-MM-DD hh:mm A');
 const createTicket = async (req, res = response) => {
 
     var options = {
-        httpHeaders: {
-            Authorization: "Bearer ACEFAD8C-4B4D-4042-AB30-6C735F5BAC8B"
-        },
-        phantomPath: "../../node_modules/phantomjs/bin/phantomjs",
         childProcessOptions: {
             env: { OPENSSL_CONF: '/dev/null' }
         },
@@ -54,10 +50,6 @@ const createTicket = async (req, res = response) => {
 
 const createReporte = async (req, res = response) => {
     var options = {
-        httpHeaders: {
-            Authorization: "Bearer ACEFAD8C-4B4D-4042-AB30-6C735F5BAC8B"
-        },
-        phantomPath: "../../node_modules/phantomjs/bin/phantomjs",
         childProcessOptions: {
             env: { OPENSSL_CONF: '/dev/null' }
         }, format: 'Letter'
@@ -122,10 +114,6 @@ const getTicket = async (req, res = response) => {
 const reimprimirTicket = async (req, res = response) => {
 
     var options = {
-        httpHeaders: {
-            Authorization: "Bearer ACEFAD8C-4B4D-4042-AB30-6C735F5BAC8B"
-        },
-        phantomPath: "../../node_modules/phantomjs/bin/phantomjs",
         childProcessOptions: {
             env: { OPENSSL_CONF: '/dev/null' }
         },
