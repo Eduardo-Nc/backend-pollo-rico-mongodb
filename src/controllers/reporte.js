@@ -3,6 +3,7 @@ const moment = require('moment-timezone');
 const pdf = require('html-pdf');
 const pdfTemplate = require('./../templates/reporte.js');
 const ticket = require('./../templates/index.js');
+const ticketPre = require('./../templates/preliminar.js');
 const pdfTemplateReimprecion = require('./../templates/reimpresion.js');
 
 
@@ -35,6 +36,43 @@ const createTicket = async (req, res = response) => {
         });
 
         console.log(r + " RESPUESTA Ticket")
+        // return res.status(200).json(usuario);
+
+
+    } catch (error) {
+        console.error(error);
+        // console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
+
+const createTicketPreliminar = async (req, res = response) => {
+
+    var options = {
+        childProcessOptions: {
+            env: { OPENSSL_CONF: '/dev/null' }
+        },
+        "height": "11in",
+        "width": "83mm",
+        "border": "0px",
+    }
+
+    let { compra, datos } = req.body;
+
+    try {
+
+        let r = pdf.create(ticketPre(compra, datos, HoraActual), options).toFile(`${process.cwd()}/src/facturas/resultpreliminar.pdf`, (err) => {
+            if (err) {
+                console.log(err)
+                res.send(Promise.reject());
+            }
+            res.send(Promise.resolve());
+        });
+
+        console.log(r + " RESPUESTA ticketPre")
         // return res.status(200).json(usuario);
 
 
@@ -107,8 +145,17 @@ const getTicket = async (req, res = response) => {
     }
 }
 
-
-
+const getTicketPreliminar = async (req, res = response) => {
+    try {
+        res.sendFile(`${process.cwd()}/src/facturas/resultpreliminar.pdf`)
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Un error fue detectado, por favor habla con el administrador'
+        })
+    }
+}
 
 
 const reimprimirTicket = async (req, res = response) => {
@@ -171,7 +218,9 @@ module.exports = {
     createReporte,
     getReporte,
     createTicket,
+    createTicketPreliminar,
     getTicket,
     getReimprimirTicket,
-    reimprimirTicket
+    reimprimirTicket,
+    getTicketPreliminar
 }
