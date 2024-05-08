@@ -9,9 +9,9 @@ const userSchema = Schema({
     },
     correo: {
         type: String,
-        index: true,
-        unique: true,
-        sparse: true,
+        // index: true,
+        // unique: true,
+        // sparse: true,
         trim: true,
         lowercase: true
     },

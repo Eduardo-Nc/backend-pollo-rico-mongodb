@@ -192,7 +192,7 @@ const createUser = async (req, res = response) => {
     // console.log(req.body);
 
     try {
-        let usuario = await User.findOne({ correo: correo });
+        let usuario = await User.findOne({ status: true, correo: correo });
 
         if (usuario !== null) {
             return res.status(201).json({
@@ -202,7 +202,6 @@ const createUser = async (req, res = response) => {
         }
 
         usuario = new User();
-
 
         //Enviar datos de acceso
         // const accesssData = {
